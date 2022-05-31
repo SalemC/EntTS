@@ -2,9 +2,18 @@
     "name": "entts",
     "version": "1.0.0",
     "description": "An Entity Component System written in TS",
-    "main": "index.ts",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "jest --config jestconfig.json",
+        "build": "tsc",
+        "format": "prettier --write \"src/**/*.ts\"",
+        "lint": "tslint -p tsconfig.json",
+        "prepare": "npm run build",
+        "prepublishOnly": "npm run test && npm run lint",
+        "preversion": "npm run lint",
+        "version": "npm run format && git add -A src",
+        "postversion": "git push && git push --tags"
     },
     "repository": {
         "type": "git",
@@ -14,16 +23,26 @@
         "Typescript",
         "ECS"
     ],
-    "author": "Salem Cresswell",
+    "author": "Salem Cresswell <salem.cresswell@btinternet.com>",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/SalemC/EntTS/issues"
     },
     "homepage": "https://github.com/SalemC/EntTS#readme",
+    "files": [
+        "lib/**/*"
+    ],
     "dependencies": {
         "uuid": "^8.3.2"
     },
     "devDependencies": {
-        "@types/uuid": "^8.3.4"
+        "@types/jest": "^27.5.1",
+        "@types/uuid": "^8.3.4",
+        "jest": "^28.1.0",
+        "prettier": "^2.6.2",
+        "ts-jest": "^28.0.3",
+        "tslint": "^6.1.3",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^4.7.2"
     }
 }

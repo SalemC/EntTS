@@ -4,9 +4,9 @@ import { EntityManager } from '../EntityManager';
 
 class Entity {
     /**
-     * This entity's unique identifier.
+     * @param {string} id This entity's unique identifier.
      */
-    public readonly id: string = uuidv4();
+    public constructor(public readonly id: string = uuidv4()) {}
 
     /**
      * Add `Component` to this entity.
