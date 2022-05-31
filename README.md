@@ -48,7 +48,7 @@ entity.addComponent(PositionComponent);
 entity.addComponent(GravityComponent);
 
 // SystemManager needs to be updated periodically in order for it to perform changes.
-// We'll use a setTimeout here, but you could use any kind of loop.
+// We'll use a setInterval here, but you could use any kind of loop.
 setInterval(() => {
     SystemManager.update();
 }, 1);
