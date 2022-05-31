@@ -1,0 +1,29 @@
+{
+    "name": "entts",
+    "version": "1.0.0",
+    "description": "An Entity Component System written in TS",
+    "main": "index.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SalemC/EntTS.git"
+    },
+    "keywords": [
+        "Typescript",
+        "ECS"
+    ],
+    "author": "Salem Cresswell",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/SalemC/EntTS/issues"
+    },
+    "homepage": "https://github.com/SalemC/EntTS#readme",
+    "dependencies": {
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "@types/uuid": "^8.3.4"
+    }
+}
