@@ -27,11 +27,15 @@ class MovementSystem extends System {
         this.entities.forEach((entityId) => {
             const entity = new Entity(entityId);
 
-            // Grab a reference to the underlying `PositionComponent` for each entity.
+            // Grab a reference to the components for the current entity.
             const position = entity.getComponent(PositionComponent);
+            const gravity = entity.getComponent(GravityComponent);
+
+            // These components should never be null, but better safe than sorry!
+            if (!position || !gravity) return;
 
             // Then, let's perform some changes to that component!
-            position.y -= entity.getComponent(GravityComponent).amount;
+            position.y -= gravity.amount;
         });
     }
 }
