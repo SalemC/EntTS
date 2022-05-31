@@ -19,8 +19,10 @@ class GravityComponent {
 
 // Then, you'll want at least one system to handle your components!
 class MovementSystem extends System {
+    // Any entities with *exactly* these components will be available in the `onUpdate` method.
     public components = [PositionComponent, GravityComponent];
 
+    // This method is called every time the SystemManager updates.
     public onUpdate() {
         this.entities.forEach((entityId) => {
             const entity = new Entity(entityId);
