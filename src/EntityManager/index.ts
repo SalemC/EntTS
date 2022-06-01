@@ -99,7 +99,7 @@ class EntityManager {
     ): T | null {
         if (!EntityManager.entities.has(entity)) return null;
 
-        return EntityManager.entities.get(entity)!.get(Component.name) || null;
+        return EntityManager.entities.get(entity)!.get(Component.name) ?? null;
     }
 }
 

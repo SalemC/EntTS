@@ -5,9 +5,9 @@ class SystemManager {
     /**
      * All active systems.
      *
-     * @var {Set<System>}
+     * @var {Map<string, System>}
      */
-    public static readonly systems = new Set<System>();
+    public static readonly systems = new Map<string, System>();
 
     /**
      * Add a system.
@@ -33,7 +33,7 @@ class SystemManager {
             }
         }
 
-        SystemManager.systems.add(system);
+        SystemManager.systems.set(SystemClass.name, system);
     }
 
     /**
@@ -42,7 +42,7 @@ class SystemManager {
      * @return {void}
      */
     public static update(): void {
-        for (const system of SystemManager.systems) {
+        for (const system of SystemManager.systems.values()) {
             system.onUpdate();
         }
     }
@@ -57,15 +57,17 @@ class SystemManager {
     public static handleEntityComponentsChanged(entity: string): void {
         if (!EntityManager.entities.has(entity)) return;
 
-        for (const system of SystemManager.systems) {
-            if (system.entities.has(entity)) continue;
+        for (const system of SystemManager.systems.values()) {
+            const systemHasEntity = system.entities.has(entity);
 
-            if (
-                system.components.every((component) =>
-                    EntityManager.entities.get(entity)!.has(component.name),
-                )
-            ) {
+            const hasAllComponents = system.components.every((component) =>
+                EntityManager.entities.get(entity)!.has(component.name),
+            );
+
+            if (hasAllComponents && !systemHasEntity) {
                 system.entities.add(entity);
+            } else if (!hasAllComponents && systemHasEntity) {
+                system.entities.delete(entity);
             }
         }
     }

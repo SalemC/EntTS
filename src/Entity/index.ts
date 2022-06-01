@@ -46,6 +46,19 @@ class Entity {
     public getComponent<T>(Component: new (...args: any[]) => T): T | null {
         return EntityManager.getComponentForEntity(this.id, Component);
     }
+
+    /**
+     * Remove `Component` from this entity.
+     *
+     * @param {T} Component The component.
+     *
+     * @return {boolean}
+     */
+    public removeComponent<T>(Component: new (...args: any[]) => T): this {
+        EntityManager.removeComponentFromEntity(this.id, Component);
+
+        return this;
+    }
 }
 
 export { Entity };

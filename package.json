@@ -6,8 +6,9 @@
     "types": "lib/index.d.ts",
     "scripts": {
         "test": "jest --config jestconfig.json",
+        "testCoverage": "jest --config jestconfig.json --coverage",
         "build": "tsc",
-        "format": "prettier --write \"src/**/*.ts\"",
+        "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
         "lint": "tslint -p tsconfig.json",
         "prepare": "npm run build",
         "prepublishOnly": "npm run test && npm run lint",
@@ -36,8 +37,10 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
+        "@babel/preset-env": "^7.18.2",
         "@types/jest": "^27.5.1",
         "@types/uuid": "^8.3.4",
+        "babel-jest": "^28.1.0",
         "jest": "^28.1.0",
         "prettier": "^2.6.2",
         "ts-jest": "^28.0.3",
