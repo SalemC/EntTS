@@ -1,6 +1,6 @@
 {
     "name": "entts",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "An Entity Component System written in TS",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
