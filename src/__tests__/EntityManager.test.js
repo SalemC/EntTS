@@ -36,6 +36,8 @@ describe('EntityManager', () => {
         entity.removeComponent(TestComponent);
 
         expect(handleEntityComponentsChangedSpy).not.toHaveBeenCalled();
+
+        expect(EntityManager.entities.size).toBe(0);
     });
 
     it('should return early in entityHasComponent if entity does not exist', () => {

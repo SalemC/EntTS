@@ -63,9 +63,14 @@ class EntityManager {
     >(entity: string, Component: T): void {
         if (!EntityManager.entities.has(entity)) return;
 
-        EntityManager.entities.get(entity)!.delete(Component.name);
+        const entityComponents = EntityManager.entities.get(entity)!;
+
+        entityComponents.delete(Component.name);
 
         SystemManager.handleEntityComponentsChanged(entity);
+
+        // If the entity has no more components, remove it to prevent dangling entities.
+        if (entityComponents.size === 0) EntityManager.entities.delete(entity);
     }
 
     /**
