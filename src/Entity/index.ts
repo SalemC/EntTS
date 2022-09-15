@@ -4,9 +4,11 @@ import { EntityManager } from '../EntityManager';
 
 class Entity {
     /**
-     * @param {string} id This entity's unique identifier.
+     * Create an entity.
+     *
+     * @param {string} id The entity's unique identifier.
      */
-    public constructor(public readonly id: string = uuidv4()) {}
+    constructor(public readonly id: string = uuidv4()) {}
 
     /**
      * Add `Component` to this entity.
@@ -26,6 +28,21 @@ class Entity {
     }
 
     /**
+     * Remove `Component` from this entity.
+     *
+     * @param {T} Component The component.
+     *
+     * @return {this}
+     */
+    public removeComponent<T extends new (...args: any[]) => any>(
+        Component: T,
+    ): this {
+        EntityManager.removeComponentFromEntity(this.id, Component);
+
+        return this;
+    }
+
+    /**
      * Check if this entity has `Component`.
      *
      * @param {T} Component The component.
@@ -34,6 +51,19 @@ class Entity {
      */
     public hasComponent<T>(Component: new (...args: any[]) => T): boolean {
         return EntityManager.entityHasComponent(this.id, Component);
+    }
+
+    /**
+     * Check if this entity has all `components`.
+     *
+     * @param {(new (...args: any[]) => any)[]} components The components.
+     *
+     * @return {boolean}
+     */
+    public hasComponents(
+        ...components: (new (...args: any[]) => any)[]
+    ): boolean {
+        return components.every((component) => this.hasComponent(component));
     }
 
     /**
@@ -48,16 +78,12 @@ class Entity {
     }
 
     /**
-     * Remove `Component` from this entity.
+     * Destroy this entity.
      *
-     * @param {T} Component The component.
-     *
-     * @return {boolean}
+     * @return {void}
      */
-    public removeComponent<T>(Component: new (...args: any[]) => T): this {
-        EntityManager.removeComponentFromEntity(this.id, Component);
-
-        return this;
+    public destroy(): void {
+        EntityManager.destroyEntity(this.id);
     }
 }
 

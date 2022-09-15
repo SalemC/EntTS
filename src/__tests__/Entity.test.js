@@ -1,7 +1,12 @@
+import { EntityManager } from '../EntityManager';
 import { Entity } from '../Entity';
 
 class TestComponent {
     value = null;
+}
+
+class TestComponent2 {
+    value2 = null;
 }
 
 describe('Entity', () => {
@@ -33,9 +38,34 @@ describe('Entity', () => {
         }).toThrow();
     });
 
+    it('should add a second component', () => {
+        entity.addComponent(TestComponent2);
+
+        expect(entity.hasComponent(TestComponent2)).toBe(true);
+    });
+
+    it('should have both components', () => {
+        expect(entity.hasComponents(TestComponent, TestComponent)).toBe(true);
+    });
+
     it('should remove a component', () => {
         entity.removeComponent(TestComponent);
 
         expect(entity.hasComponent(TestComponent)).toBe(false);
+        expect(entity.hasComponents(TestComponent, TestComponent)).toBe(false);
+    });
+
+    it('should be destroyed', () => {
+        const entityManagerDestroyEntitySpy = jest.spyOn(
+            EntityManager,
+            'destroyEntity',
+        );
+
+        expect(EntityManager.entities.size).toBe(1);
+
+        entity.destroy();
+
+        expect(entityManagerDestroyEntitySpy).toHaveBeenCalled();
+        expect(EntityManager.entities.size).toBe(0);
     });
 });

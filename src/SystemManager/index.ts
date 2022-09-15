@@ -5,9 +5,9 @@ class SystemManager {
     /**
      * All active systems.
      *
-     * @var {Map<string, System>}
+     * @var {Set<System>}
      */
-    public static readonly systems = new Map<string, System>();
+    public static readonly systems = new Set<System>();
 
     /**
      * Add a system.
@@ -24,16 +24,14 @@ class SystemManager {
             entity,
             entityComponents,
         ] of EntityManager.entities.entries()) {
-            if (
-                system.components.every((component) =>
-                    entityComponents.has(component.name),
-                )
-            ) {
-                system.entities.add(entity);
-            }
+            const hasEveryComponent = system.components.every((component) =>
+                entityComponents.has(component.name),
+            );
+
+            if (hasEveryComponent) system.add(entity);
         }
 
-        SystemManager.systems.set(SystemClass.name, system);
+        SystemManager.systems.add(system);
     }
 
     /**
@@ -51,23 +49,37 @@ class SystemManager {
      * Handle an entity's components changing.
      *
      * @param {string} entity The entity.
+     * @param {T} Component The component.
+     * @param {'added' | 'removed'} action The action.
      *
      * @return {void}
      */
-    public static handleEntityComponentsChanged(entity: string): void {
+    public static handleEntityComponentsChanged<
+        T extends new (...args: any[]) => any,
+    >(entity: string, Component: T, action: 'added' | 'removed'): void {
         if (!EntityManager.entities.has(entity)) return;
 
-        for (const system of SystemManager.systems.values()) {
-            const systemHasEntity = system.entities.has(entity);
+        const entityComponents = EntityManager.entities.get(entity)!;
 
-            const hasAllComponents = system.components.every((component) =>
-                EntityManager.entities.get(entity)!.has(component.name),
-            );
+        for (const system of SystemManager.systems) {
+            // If a component has just been removed, we can just check if
+            // the system also has that component, and if so, we know the entity
+            // can't have all components in the system.
+            const hasAllComponents =
+                action === 'removed'
+                    ? !system.components.includes(Component)
+                    : system.components.every((component) =>
+                          entityComponents.has(component.name),
+                      );
 
-            if (hasAllComponents && !systemHasEntity) {
-                system.entities.add(entity);
-            } else if (!hasAllComponents && systemHasEntity) {
-                system.entities.delete(entity);
+            if (system.has(entity)) {
+                if (action === 'removed' && !hasAllComponents) {
+                    system.remove(entity);
+                }
+            } else {
+                if (action === 'added' && hasAllComponents) {
+                    system.add(entity);
+                }
             }
         }
     }

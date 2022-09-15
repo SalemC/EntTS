@@ -1,16 +1,14 @@
 import { SystemManager } from '../SystemManager';
+import { TEntityList } from './types';
 import { Entity } from '../Entity';
 
 class EntityManager {
     /**
      * All entities.
      *
-     * @var {Map<string, Map<string, any>>}
+     * @var {TEntityList}
      */
-    public static readonly entities = new Map<
-        string,
-        Map<string, InstanceType<any>>
-    >();
+    public static readonly entities: TEntityList = new Map();
 
     /**
      * Create a new entity.
@@ -47,7 +45,7 @@ class EntityManager {
             .get(entity)!
             .set(Component.name, new Component(...args));
 
-        SystemManager.handleEntityComponentsChanged(entity);
+        SystemManager.handleEntityComponentsChanged(entity, Component, 'added');
     };
 
     /**
@@ -63,14 +61,16 @@ class EntityManager {
     >(entity: string, Component: T): void {
         if (!EntityManager.entities.has(entity)) return;
 
-        const entityComponents = EntityManager.entities.get(entity)!;
+        SystemManager.handleEntityComponentsChanged(
+            entity,
+            Component,
+            'removed',
+        );
 
-        entityComponents.delete(Component.name);
-
-        SystemManager.handleEntityComponentsChanged(entity);
-
-        // If the entity has no more components, remove it to prevent dangling entities.
-        if (entityComponents.size === 0) EntityManager.entities.delete(entity);
+        // We delete the component from the entity after notifying the SystemManager
+        // because systems may need to know the component's state to perform
+        // cleanup operations before removing it.
+        EntityManager.entities.get(entity)!.delete(Component.name);
     }
 
     /**
@@ -104,8 +104,52 @@ class EntityManager {
     ): T | null {
         if (!EntityManager.entities.has(entity)) return null;
 
-        return EntityManager.entities.get(entity)!.get(Component.name) ?? null;
+        return EntityManager.entities.get(entity)!.get(Component.name) || null;
     }
+
+    /**
+     * Get all entities with all `components`.
+     *
+     * @param {(new (...args: any[]) => any)[]} components The components.
+     *
+     * @return {Entity[]}
+     */
+    public static getAllEntitiesWithComponents = (
+        ...components: (new (...args: any[]) => any)[]
+    ): Entity[] => {
+        const entities: Entity[] = [];
+
+        EntityManager.entities.forEach((entityComponents, entityId) => {
+            const hasAllComponents = components.every((component) =>
+                entityComponents.has(component.name),
+            );
+
+            if (!hasAllComponents) return;
+
+            entities.push(new Entity(entityId));
+        });
+
+        return entities;
+    };
+
+    /**
+     * Destroy an entity with `entityId`.
+     *
+     * @param {string} entityId The entity id.
+     *
+     * @return {void}
+     */
+    public static destroyEntity = (entityId: string): void => {
+        if (!EntityManager.entities.has(entityId)) return;
+
+        const entity = new Entity(entityId);
+
+        EntityManager.entities.get(entityId)!.forEach((component) => {
+            entity.removeComponent(component.constructor);
+        });
+
+        EntityManager.entities.delete(entityId);
+    };
 }
 
 export { EntityManager };
