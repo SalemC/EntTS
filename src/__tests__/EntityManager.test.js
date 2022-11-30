@@ -21,17 +21,29 @@ beforeEach(() => {
 });
 
 describe('EntityManager', () => {
-    const entity = EntityManager.createEntity();
-
     it('should create a valid entity', () => {
+        expect(EntityManager.entities.size).toBe(0);
+
+        const entity = EntityManager.createEntity();
+
+        // Shouldn't record the entity until it has at least 1 component.
+        expect(EntityManager.entities.size).toBe(0);
+
         expect(typeof entity.id).toBe('string');
 
+        entity.addComponent(TestComponent);
+
+        expect(EntityManager.entities.size).toBe(1);
         expect(entity.id).toMatch(
             /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
         );
+
+        entity.destroy();
     });
 
     it('should return early in removeComponentFromEntity if entity does not exist', () => {
+        const entity = EntityManager.createEntity();
+
         const handleEntityComponentsChangedSpy = jest.spyOn(
             SystemManager,
             'handleEntityComponentsChanged',
@@ -42,25 +54,37 @@ describe('EntityManager', () => {
         expect(handleEntityComponentsChangedSpy).not.toHaveBeenCalled();
 
         expect(EntityManager.entities.size).toBe(0);
+
+        entity.destroy();
     });
 
     it('should return early in entityHasComponent if entity does not exist', () => {
-        new Entity('inoperative-id').hasComponent(TestComponent);
+        const entity = new Entity('inoperative-id');
+
+        entity.hasComponent(TestComponent);
 
         expect(entitiesGetSpy).not.toHaveBeenCalled();
 
         entitiesGetSpy.mockClear();
+
+        entity.destroy();
     });
 
     it('should return early in getComponentForEntity if entity does not exist', () => {
-        new Entity('inoperative-id').getComponent(TestComponent);
+        const entity = new Entity('inoperative-id');
+
+        entity.getComponent(TestComponent);
 
         expect(entitiesGetSpy).not.toHaveBeenCalled();
 
         entitiesGetSpy.mockClear();
+
+        entity.destroy();
     });
 
     it('should return null in getComponentForEntity if entity does not have component', () => {
+        const entity = EntityManager.createEntity();
+
         entity.addComponent(TestComponent);
 
         const entitiesGetComponentGetSpy = jest.spyOn(
@@ -68,14 +92,20 @@ describe('EntityManager', () => {
             'get',
         );
 
-        expect(entity.getComponent(UnusedComponent)).toBeNull();
+        expect(entity.getComponent(UnusedComponent)).toBe(null);
 
         expect(entitiesGetComponentGetSpy).toHaveBeenCalledWith(
             UnusedComponent.name,
         );
+
+        entity.destroy();
     });
 
     it('should return 0 entities in getAllEntitiesWithComponents if not all components exist', () => {
+        const entity = EntityManager.createEntity();
+
+        entity.addComponent(TestComponent);
+
         const entityComponentsHasSpy = jest.spyOn(
             EntityManager.entities.get(entity.id),
             'has',
@@ -88,15 +118,19 @@ describe('EntityManager', () => {
 
         expect(entityComponentsHasSpy).toHaveBeenCalled();
         expect(result.length).toBe(0);
+
+        entity.destroy();
     });
 
     it('should return 1 entities in getAllEntitiesWithComponents if only 1 entity exists with all components', () => {
+        const entity = EntityManager.createEntity();
         const newEntity = EntityManager.createEntity();
+
+        entity.addComponent(TestComponent);
+        entity.addComponent(TestComponent2);
 
         newEntity.addComponent(TestComponent2);
         newEntity.addComponent(UnusedComponent);
-
-        entity.addComponent(TestComponent2);
 
         const result = EntityManager.getAllEntitiesWithComponents(
             TestComponent,
@@ -105,6 +139,9 @@ describe('EntityManager', () => {
 
         expect(result.length).toBe(1);
         expect(result[0].id).toBe(entity.id);
+
+        entity.destroy();
+        newEntity.destroy();
     });
 
     it('should return early in destroyEntity if entity does not exist', () => {
