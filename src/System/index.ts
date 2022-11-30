@@ -4,7 +4,7 @@ abstract class System {
      *
      * @var {(new (...args: any[]) => any)[]}
      */
-    public abstract components: (new (...args: any[]) => any)[];
+    public abstract readonly components: (new (...args: any[]) => any)[];
 
     /**
      * The entities this system is currently processing.
@@ -12,6 +12,15 @@ abstract class System {
      * @var {Set<string>}
      */
     protected readonly entities: Set<string> = new Set();
+
+    /**
+     * Get the entities in this system.
+     *
+     * @return {Set<string>}
+     */
+    public getEntities(): Set<string> {
+        return this.entities;
+    }
 
     /**
      * Add `entity` to this system.
@@ -73,7 +82,7 @@ abstract class System {
      *
      * @return {void}
      */
-    public abstract onUpdate(): void;
+    public onUpdate(): void {}
 }
 
 export { System };
