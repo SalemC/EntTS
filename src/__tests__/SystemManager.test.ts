@@ -38,21 +38,23 @@ describe('SystemManager', () => {
     it('should create system and add existing entities to system', () => {
         SystemManager.add(System1);
 
-        expect(SystemManager.systems.size).toBe(1);
+        const systems = SystemManager.getAll();
 
-        const [system1] = [...SystemManager.systems.values()];
+        expect(systems.size).toBe(1);
+
+        const [system1] = [...systems.values()];
 
         expect(system1).toBeInstanceOf(System1);
-        expect(system1.entities.size).toBe(1);
+        expect(system1.getEntities().size).toBe(1);
 
         SystemManager.add(System2);
 
-        expect(SystemManager.systems.size).toBe(2);
+        expect(systems.size).toBe(2);
 
-        const [, system2] = [...SystemManager.systems.values()];
+        const [, system2] = [...systems.values()];
 
         expect(system2).toBeInstanceOf(System2);
-        expect(system2.entities.size).toBe(0);
+        expect(system2.getEntities().size).toBe(0);
     });
 
     it('should throw when adding the same system twice', () => {
@@ -64,7 +66,7 @@ describe('SystemManager', () => {
     });
 
     it('should call onUpdate method of system', () => {
-        const [system1] = [...SystemManager.systems.values()];
+        const [system1] = [...SystemManager.getAll().values()];
 
         const systemOnUpdateSpy = jest.spyOn(system1, 'onUpdate');
 
@@ -75,7 +77,7 @@ describe('SystemManager', () => {
 
     it('should return early in handleEntityComponentsChanged if entity does not exist', () => {
         const systemSystemsValuesSpy = jest.spyOn(
-            SystemManager.systems,
+            SystemManager.getAll(),
             'values',
         );
 
@@ -89,7 +91,7 @@ describe('SystemManager', () => {
     });
 
     it('should not call remove on system if component does not exist for entity', () => {
-        const [system1] = [...SystemManager.systems.values()];
+        const [system1] = [...SystemManager.getAll().values()];
 
         const systemRemoveSpy = jest.spyOn(system1, 'remove');
 
@@ -103,7 +105,7 @@ describe('SystemManager', () => {
     });
 
     it('should remove entity from system if entity no longer has all components', () => {
-        const [system1] = [...SystemManager.systems.values()];
+        const [system1] = [...SystemManager.getAll().values()];
 
         const systemEntitiesRemoveSpy = jest.spyOn(system1, 'remove');
 
@@ -111,11 +113,11 @@ describe('SystemManager', () => {
 
         expect(systemEntitiesRemoveSpy).toHaveBeenCalled();
         expect(systemEntitiesRemoveSpy).toHaveBeenCalledWith(entity.id);
-        expect(system1.entities.size).toBe(0);
+        expect(system1.getEntities().size).toBe(0);
     });
 
     it('should add entity to system if entity now has all components', () => {
-        const [system1] = [...SystemManager.systems.values()];
+        const [system1] = [...SystemManager.getAll().values()];
 
         const systemEntitiesAddSpy = jest.spyOn(system1, 'add');
 
@@ -123,13 +125,21 @@ describe('SystemManager', () => {
 
         expect(systemEntitiesAddSpy).toHaveBeenCalled();
         expect(systemEntitiesAddSpy).toHaveBeenCalledWith(entity.id);
-        expect(system1.entities.size).toBe(1);
+        expect(system1.getEntities().size).toBe(1);
     });
 
     it('should return an added system', () => {
-        const [system1] = [...SystemManager.systems.values()];
+        const [system1] = [...SystemManager.getAll().values()];
 
         expect(SystemManager.get(System1)).toBe(system1);
         expect(SystemManager.get(System1)).toBeInstanceOf(System1);
+    });
+
+    it('should return all systems', () => {
+        const systems = SystemManager.getAll();
+
+        expect(systems.size).toBe(2);
+        expect(SystemManager.get(System1)).not.toBeNull();
+        expect(SystemManager.get(System2)).not.toBeNull();
     });
 });

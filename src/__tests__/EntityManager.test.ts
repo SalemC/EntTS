@@ -88,7 +88,7 @@ describe('EntityManager', () => {
         entity.addComponent(TestComponent);
 
         const entitiesGetComponentGetSpy = jest.spyOn(
-            EntityManager.entities.get(entity.id),
+            EntityManager.entities.get(entity.id)!,
             'get',
         );
 
@@ -107,7 +107,7 @@ describe('EntityManager', () => {
         entity.addComponent(TestComponent);
 
         const entityComponentsHasSpy = jest.spyOn(
-            EntityManager.entities.get(entity.id),
+            EntityManager.entities.get(entity.id)!,
             'has',
         );
 

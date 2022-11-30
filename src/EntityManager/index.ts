@@ -5,26 +5,20 @@ import { Entity } from '../Entity';
 class EntityManager {
     /**
      * All entities.
-     *
-     * @var {TEntityList}
      */
     public static readonly entities: TEntityList = new Map();
 
     /**
      * Create a new entity.
-     *
-     * @return {Entity}
      */
     public static createEntity = (): Entity => new Entity();
 
     /**
      * Add `Component` to `entity`.
      *
-     * @param {string} entity The entity.
-     * @param {T} Component The component.
-     * @param {ConstructorParameters<T>} args All arguments for `Component`.
-     *
-     * @return {void}
+     * @param entity The entity.
+     * @param Component The component.
+     * @param args All arguments for `Component`.
      */
     public static addComponentToEntity = <
         T extends new (...args: any[]) => any,
@@ -51,10 +45,8 @@ class EntityManager {
     /**
      * Remove `Component` from `entity`.
      *
-     * @param {string} entity The entity.
-     * @param {T} Component The component.
-     *
-     * @return {void}
+     * @param entity The entity.
+     * @param Component The component.
      */
     public static removeComponentFromEntity<
         T extends new (...args: any[]) => any,
@@ -76,10 +68,8 @@ class EntityManager {
     /**
      * Check if `entity` has `Component`.
      *
-     * @param {string} entity The entity.
-     * @param {T} Component The component.
-     *
-     * @return {boolean}
+     * @param entity The entity.
+     * @param Component The component.
      */
     public static entityHasComponent<T>(
         entity: string,
@@ -93,10 +83,8 @@ class EntityManager {
     /**
      * Get `Component` for `entity`.
      *
-     * @param {string} entity The entity.
-     * @param {T} Component The component.
-     *
-     * @return {T|null}
+     * @param entity The entity.
+     * @param Component The component.
      */
     public static getComponentForEntity<T>(
         entity: string,
@@ -110,9 +98,7 @@ class EntityManager {
     /**
      * Get all entities with all `components`.
      *
-     * @param {(new (...args: any[]) => any)[]} components The components.
-     *
-     * @return {Entity[]}
+     * @param components The components.
      */
     public static getAllEntitiesWithComponents = (
         ...components: (new (...args: any[]) => any)[]
@@ -135,9 +121,7 @@ class EntityManager {
     /**
      * Destroy an entity with `entityId`.
      *
-     * @param {string} entityId The entity id.
-     *
-     * @return {void}
+     * @param entityId The entity id.
      */
     public static destroyEntity = (entityId: string): void => {
         if (!EntityManager.entities.has(entityId)) return;

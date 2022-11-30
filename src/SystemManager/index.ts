@@ -4,17 +4,13 @@ import { System } from '../System';
 class SystemManager {
     /**
      * All active systems.
-     *
-     * @var {Map<System>}
      */
     private static readonly systems = new Map<new () => System, System>();
 
     /**
      * Add a system.
      *
-     * @param {new () => System} SystemClass The system class.
-     *
-     * @return {void}
+     * @param SystemClass The system class.
      */
     public static add(SystemClass: new () => System): void {
         if (SystemManager.systems.has(SystemClass)) {
@@ -43,18 +39,21 @@ class SystemManager {
     /**
      * Get an added system.
      *
-     * @param {new () => System} SystemClass The system class.
-     *
-     * @return {System|undefined}
+     * @param SystemClass The system class.
      */
     public static get(SystemClass: new () => System): System | undefined {
         return SystemManager.systems.get(SystemClass);
     }
 
     /**
+     * Get all registered systems.
+     */
+    public static getAll(): Map<new () => System, System> {
+        return SystemManager.systems;
+    }
+
+    /**
      * Handle updating all systems.
-     *
-     * @return {void}
      */
     public static update(): void {
         for (const system of SystemManager.systems.values()) {
@@ -65,11 +64,9 @@ class SystemManager {
     /**
      * Handle an entity's components changing.
      *
-     * @param {string} entity The entity.
-     * @param {T} Component The component.
-     * @param {'added' | 'removed'} action The action.
-     *
-     * @return {void}
+     * @param entity The entity.
+     * @param Component The component.
+     * @param action The action.
      */
     public static handleEntityComponentsChanged<
         T extends new (...args: any[]) => any,

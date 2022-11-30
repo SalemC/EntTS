@@ -12,7 +12,7 @@ class TestComponent2 {
 class TestComponent3 {
     value3 = null;
 
-    constructor(x, y) {
+    constructor(x: any, y: any) {
         //
     }
 }
@@ -90,11 +90,9 @@ describe('Entity', () => {
     });
 
     it('should throw if duplicate component is added', () => {
-        let entity = null;
+        const entity: Entity = new Entity();
 
         expect(() => {
-            entity = new Entity();
-
             entity.addComponent(TestComponent);
             entity.addComponent(TestComponent);
         }).toThrow('Entity already has this component.');
