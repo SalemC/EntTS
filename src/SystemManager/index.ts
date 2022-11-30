@@ -5,9 +5,9 @@ class SystemManager {
     /**
      * All active systems.
      *
-     * @var {Set<System>}
+     * @var {Map<System>}
      */
-    public static readonly systems = new Set<System>();
+    private static readonly systems = new Map<new () => System, System>();
 
     /**
      * Add a system.
@@ -17,6 +17,12 @@ class SystemManager {
      * @return {void}
      */
     public static add(SystemClass: new () => System): void {
+        if (SystemManager.systems.has(SystemClass)) {
+            throw new Error(
+                "You're attempting to add the same system twice, please remove the duplicate add call.",
+            );
+        }
+
         const system = new SystemClass();
 
         // Place all current entities with all matching components into the system.
@@ -31,7 +37,18 @@ class SystemManager {
             if (hasEveryComponent) system.add(entity);
         }
 
-        SystemManager.systems.add(system);
+        SystemManager.systems.set(SystemClass, system);
+    }
+
+    /**
+     * Get an added system.
+     *
+     * @param {new () => System} SystemClass The system class.
+     *
+     * @return {System|undefined}
+     */
+    public static get(SystemClass: new () => System): System | undefined {
+        return SystemManager.systems.get(SystemClass);
     }
 
     /**
@@ -61,7 +78,7 @@ class SystemManager {
 
         const entityComponents = EntityManager.entities.get(entity)!;
 
-        for (const system of SystemManager.systems) {
+        for (const system of SystemManager.systems.values()) {
             // If a component has just been removed, we can just check if
             // the system also has that component, and if so, we know the entity
             // can't have all components in the system.
