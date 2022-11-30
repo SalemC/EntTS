@@ -6,17 +6,15 @@ class Entity {
     /**
      * Create an entity.
      *
-     * @param {string} id The entity's unique identifier.
+     * @param id The entity's unique identifier.
      */
     constructor(public readonly id: string = uuidv4()) {}
 
     /**
      * Add `Component` to this entity.
      *
-     * @param {T} Component The component.
-     * @param {ConstructorParameters<T>} args The arguments for `Component`.
-     *
-     * @return {this}
+     * @param Component The component.
+     * @param args The arguments for `Component`.
      */
     public addComponent<T extends new (...args: any[]) => any>(
         Component: T,
@@ -30,9 +28,7 @@ class Entity {
     /**
      * Remove `Component` from this entity.
      *
-     * @param {T} Component The component.
-     *
-     * @return {this}
+     * @param Component The component.
      */
     public removeComponent<T extends new (...args: any[]) => any>(
         Component: T,
@@ -45,9 +41,7 @@ class Entity {
     /**
      * Check if this entity has `Component`.
      *
-     * @param {T} Component The component.
-     *
-     * @return {boolean}
+     * @param Component The component.
      */
     public hasComponent<T>(Component: new (...args: any[]) => T): boolean {
         return EntityManager.entityHasComponent(this.id, Component);
@@ -56,9 +50,7 @@ class Entity {
     /**
      * Check if this entity has all `components`.
      *
-     * @param {(new (...args: any[]) => any)[]} components The components.
-     *
-     * @return {boolean}
+     * @param components The components.
      */
     public hasComponents(
         ...components: (new (...args: any[]) => any)[]
@@ -69,9 +61,7 @@ class Entity {
     /**
      * Get `Component` for this entity.
      *
-     * @param {T} Component The component.
-     *
-     * @return {T|null}
+     * @param Component The component.
      */
     public getComponent<T>(Component: new (...args: any[]) => T): T | null {
         return EntityManager.getComponentForEntity(this.id, Component);
@@ -79,8 +69,6 @@ class Entity {
 
     /**
      * Destroy this entity.
-     *
-     * @return {void}
      */
     public destroy(): void {
         EntityManager.destroyEntity(this.id);

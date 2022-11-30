@@ -54,8 +54,6 @@ class SystemManager {
 
     /**
      * Handle updating all systems.
-     *
-     * @return {void}
      */
     public static update(): void {
         for (const system of SystemManager.systems.values()) {
@@ -66,11 +64,9 @@ class SystemManager {
     /**
      * Handle an entity's components changing.
      *
-     * @param {string} entity The entity.
-     * @param {T} Component The component.
-     * @param {'added' | 'removed'} action The action.
-     *
-     * @return {void}
+     * @param entity The entity.
+     * @param Component The component.
+     * @param action The action.
      */
     public static handleEntityComponentsChanged<
         T extends new (...args: any[]) => any,
