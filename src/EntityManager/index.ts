@@ -120,11 +120,11 @@ class EntityManager {
         const entities: Entity[] = [];
 
         EntityManager.entities.forEach((entityComponents, entityId) => {
-            const hasAllComponents = components.every((component) =>
-                entityComponents.has(component.name),
+            const doesntHaveAllComponents = components.some(
+                (component) => !entityComponents.has(component.name),
             );
 
-            if (!hasAllComponents) return;
+            if (doesntHaveAllComponents) return;
 
             entities.push(new Entity(entityId));
         });
