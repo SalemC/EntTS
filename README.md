@@ -1,4 +1,4 @@
-# EntTS
+# EntTS &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/SalemC/EntTS/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/entts)](https://www.npmjs.com/package/entts)
 
 An Entity Component System, written in TypeScript for JavaScript/TypeScript applications.
 
