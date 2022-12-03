@@ -76,13 +76,66 @@ setInterval(() => {
 
 ## Classes
 
+### Entity
+
+TODO
+
+#### Available Methods:
+
+TODO
+
+### EntityManager
+
+The EntityManager (static) class is the main class that handles distribution and sorting of entities with their components. This class is used almost entirely internally, therefore the public API is sparse.
+
+#### Available Methods:
+
+-   `createEntity` - provides a way of creating a new entity without instantiating the Entity class yourself
+    - Arguments: None
+    - Returns: `Entity`
+
+### SystemManager
+
+The SystemManager (static) class is the main class you'll need to use to register systems for EntTS to use. This class provides you with a way of registering, and accessing registered system's outside their own context at a later point in your application.
+
+#### Available Methods:
+
+-   `add` - provides a way to add a system to the manager
+    - Arguments:
+        - `new () => System` SystemClass - an uninstantiated version of the system class to add
+    - Returns: `void`
+-   `get` - provides a way to retrieve a system from the manager
+    - Arguments:
+        - `new () => System` SystemClass - an uninstantiated version of the system class *you've already added* to retrieve
+    - Returns: `System | undefined`
+-   `getAll` - provides a way to retrieve all added systems from the manager
+    - Arguments: None
+    - Returns: `Map<new () => System, System>`
+-   `update` - call this every time you want updates to all systems to occur
+    - Arguments: None
+    - Returns: `void`
+
 ### System
 
 The System class is the base class for all systems you require. System classes keep track of all entities that match their `components` list (accessible via the `entities` property inside the class). All System classes have their `onUpdate` method invoked every time the SystemManager `update` method is invoked.
 
 #### Available Methods:
 
--   `onUpdate`
--   `onEntityAdded`
--   `onEntityRemoved`
--   `getEntities`
+-   `onUpdate` - invoked every time the SystemManager updates
+    - Arguments: None
+    - Returns: `void`
+-   `onEntityAdded` - invoked every time an entity is added to the system
+    - Arguments: 
+        - `string` entity - the entity id
+    - Returns: `void`
+-   `onEntityRemoved` - invoked every time an entity is removed from the system
+    - Arguments:
+        - `string` entity - the entity id
+    - Returns: `void`
+-   `getEntities` - provides a way to publicly access all the entities in the system
+    - Arguments: None
+    - Returns: `Set<string>`
+-   `has` - check if the system has an entity
+    - Arguments:
+        - `string` entity - the entity id
+    - Returns: `boolean`
