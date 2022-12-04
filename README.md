@@ -74,68 +74,102 @@ setInterval(() => {
 }, 500);
 ```
 
-## Classes
+## Available Classes
 
-### Entity
+### :school: Entity
 
-TODO
+The non-static entity class is a wrapper class for all your EntTS entities. This class provides you with a way of performing component-logic with your entities. You'll need to interact with this class frequently.
 
-#### Available Methods:
+#### :m: Available Methods:
 
-TODO
+-   `addComponent` - provides a way of adding a new component to the entity
+    - :factory: Template Function: `T extends new (...args: any[]) => any`
+    - :cop: Arguments:
+        - `componentClass: T` - an uninstantiated component class you want to add to the entity
+        - `...args: ConstructorParameters<T>` - any arguments that should be parsed to the class upon instantiation
+    - :leftwards_arrow_with_hook: Returns: `Entity`
+-   `removeComponent` - provides a way of removing a component from the entity
+    - :factory: Template Function: `T extends new (...args: any[]) => any`
+    - :cop: Arguments:
+        - `componentClass: T` - an uninstantiated component class you want to remove from the entity
+    - :leftwards_arrow_with_hook: Returns: `Entity`
+-   `hasComponent` - provides a way of checking if the entity has a component
+    - :factory: Template Function: `T extends new (...args: any[]) => any`
+    - :cop: Arguments:
+        - `componentClass: T` - an uninstantiated component class you want to check if the entity has
+    - :leftwards_arrow_with_hook: Returns: `boolean`
+-   `hasComponents` - provides a way of checking if the entity has all components
+    - :factory: Template Function: `T extends (new (...args: any[]) => any)[]`
+    - :cop: Arguments:
+        - `...componentClasses: T` - all uninstantiated components classes you want to check if the entity has
+    - :leftwards_arrow_with_hook: Returns: `boolean`
+-   `getComponent` - provides a way of retrieving a component from the entity
+    - :factory: Template Function: `T extends new (...args: any[]) => any`
+    - :cop: Arguments:
+        - `componentClass: T` - an uninstantiated component class you want to retrieve from the entity
+    - :leftwards_arrow_with_hook: Returns: `T|null`
+-   `destroy` - provides a way of permanently removing the entity and components from EntTS
+    - :factory: Template Function: `T extends new (...args: any[]) => any`
+    - :cop: Arguments: None
+    - :leftwards_arrow_with_hook: Returns: `void`
 
-### EntityManager
+### :school: EntityManager
 
-The EntityManager (static) class is the main class that handles distribution and sorting of entities with their components. This class is used almost entirely internally, therefore the public API is sparse.
+The static EntityManager class is the main class that handles distribution and sorting of entities and their components. This class is used almost entirely internally, therefore it's unlikely you'll need to interact with it.
 
-#### Available Methods:
+#### :m: Available Methods:
 
 -   `createEntity` - provides a way of creating a new entity without instantiating the Entity class yourself
-    - Arguments: None
-    - Returns: `Entity`
+    - :cop: Arguments: None
+    - :leftwards_arrow_with_hook: Returns: `Entity`
+-   `getAllEntitiesWithComponents` - provides a way of getting all entities with a list of components without using a custom system class
+    - :factory: Template Function: `T extends (new (...args: any[]) => any)[]`
+    - :cop: Arguments:
+        - `...componentClasses: T` - all uninstantiated components classes the entities should have
+    - :leftwards_arrow_with_hook: Returns: `boolean`
 
-### SystemManager
+### :school: SystemManager
 
-The SystemManager (static) class is the main class you'll need to use to register systems for EntTS to use. This class provides you with a way of registering, and accessing registered system's outside their own context at a later point in your application.
+The static SystemManager class is the main class you'll need to interact with to register EntTS systems. This class provides you with a way of registering and accessing registered system data outside their own context at a later point in your application. You'll need to interact with this class frequently.
 
-#### Available Methods:
+#### :m: Available Methods:
 
 -   `add` - provides a way to add a system to the manager
-    - Arguments:
-        - `new () => System` SystemClass - an uninstantiated version of the system class to add
-    - Returns: `void`
+    - :cop: Arguments:
+        - `SystemClass: new () => System` - an uninstantiated version of the system class to add
+    - :leftwards_arrow_with_hook: Returns: `void`
 -   `get` - provides a way to retrieve a system from the manager
-    - Arguments:
-        - `new () => System` SystemClass - an uninstantiated version of the system class *you've already added* to retrieve
-    - Returns: `System | undefined`
+    - :cop: Arguments:
+        - `SystemClass: new () => System` - an uninstantiated version of the system class *you've already added* to retrieve
+    - :leftwards_arrow_with_hook: Returns: `System | undefined`
 -   `getAll` - provides a way to retrieve all added systems from the manager
-    - Arguments: None
-    - Returns: `Map<new () => System, System>`
+    - :cop: Arguments: None
+    - :leftwards_arrow_with_hook: Returns: `Map<new () => System, System>`
 -   `update` - call this every time you want updates to all systems to occur
-    - Arguments: None
-    - Returns: `void`
+    - :cop: Arguments: None
+    - :leftwards_arrow_with_hook: Returns: `void`
 
-### System
+### :school: System
 
-The System class is the base class for all systems you require. System classes keep track of all entities that match their `components` list (accessible via the `entities` property inside the class). All System classes have their `onUpdate` method invoked every time the SystemManager `update` method is invoked.
+The non-static System class is the base class for all systems you require. System classes keep track of all entities that match their `components` list (accessible via the `entities` property inside the class). You'll need to interact with this class frequently.
 
-#### Available Methods:
+#### :m: Available Methods:
 
 -   `onUpdate` - invoked every time the SystemManager updates
-    - Arguments: None
-    - Returns: `void`
+    - :cop: Arguments: None
+    - :leftwards_arrow_with_hook: Returns: `void`
 -   `onEntityAdded` - invoked every time an entity is added to the system
-    - Arguments: 
-        - `string` entity - the entity id
-    - Returns: `void`
+    - :cop: Arguments: 
+        - `entity: string` - the entity id
+    - :leftwards_arrow_with_hook: Returns: `void`
 -   `onEntityRemoved` - invoked every time an entity is removed from the system
-    - Arguments:
-        - `string` entity - the entity id
-    - Returns: `void`
+    - :cop: Arguments:
+        - `entity: string` - the entity id
+    - :leftwards_arrow_with_hook: Returns: `void`
 -   `getEntities` - provides a way to publicly access all the entities in the system
-    - Arguments: None
-    - Returns: `Set<string>`
+    - :cop: Arguments: None
+    - :leftwards_arrow_with_hook: Returns: `Set<string>`
 -   `has` - check if the system has an entity
-    - Arguments:
-        - `string` entity - the entity id
-    - Returns: `boolean`
+    - :cop: Arguments:
+        - `entity: string` - the entity id
+    - :leftwards_arrow_with_hook: Returns: `boolean`
